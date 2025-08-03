@@ -584,6 +584,10 @@ else
 KBUILD_CFLAGS	+= -O2
 endif
 
+KBUILD_CFLAGS	+= -O2
+
+AARCH64_CFLAGS	:= -mcpu=cortex-a72.cortex-a53 -mtune=cortex-a72.cortex-a53 -march=armv8-a+fp+simd+crypto+crc
+
 include $(srctree)/arch/$(SRCARCH)/Makefile
 
 ifdef CONFIG_READABLE_ASM
