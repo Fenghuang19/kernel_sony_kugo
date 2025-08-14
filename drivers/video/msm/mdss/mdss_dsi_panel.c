@@ -26,6 +26,7 @@
 #include <linux/leds.h>
 #include <linux/qpnp/pwm.h>
 #include <linux/err.h>
+#include <linux/display_state.h>
 #include <linux/string.h>
 
 #include "mdss_dsi.h"
@@ -43,6 +44,11 @@ DEFINE_LED_TRIGGER(bl_led_trigger);
 
 #define CEIL(x, y)	(((x) + ((y)-1)) / (y))
 
+bool display_on = true;
+bool is_display_on()
+{
+	return display_on;
+}
 
 static u32 rc_buf_thresh[] = {0x0e, 0x1c, 0x2a, 0x38, 0x46, 0x54, 0x62,
 	0x69, 0x70, 0x77, 0x79, 0x7b, 0x7d, 0x7e};
@@ -144,6 +150,8 @@ u32 mdss_dsi_panel_cmd_read(struct mdss_dsi_ctrl_pdata *ctrl, char cmd0,
 		if (ctrl->ndx != DSI_CTRL_LEFT)
 			return -EINVAL;
 	}
+
+	display_on = true;
 
 	dcs_cmd[0] = cmd0;
 	dcs_cmd[1] = cmd1;
@@ -885,6 +893,8 @@ static int mdss_dsi_panel_off(struct mdss_panel_data *pdata)
 		mdss_dba_utils_video_off(pinfo->dba_data);
 		mdss_dba_utils_hdcp_enable(pinfo->dba_data, false);
 	}
+
+display_on = false;
 
 end:
 #ifdef CONFIG_FB_MSM_MDSS_SPECIFIC_PANEL
